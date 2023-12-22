@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generated 3 dic 2023 12:28:04 by Hibernate Tools 5.6.15.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class catalog="tienda" name="org.iesvdm.tienda.modelo.Cliente" optimistic-lock="none" table="cliente">
+        <id name="codigoCliente" type="int">
+            <column name="codigo_cliente"/>
+            <generator class="assigned"/>
+        </id>
+        <property name="nombreCliente" type="string">
+            <column length="50" name="nombre_cliente" not-null="true"/>
+        </property>
+        <property name="nombreContacto" type="string">
+            <column length="30" name="nombre_contacto"/>
+        </property>
+        <property name="apellidoContacto" type="string">
+            <column length="30" name="apellido_contacto"/>
+        </property>
+        <property name="telefono" type="string">
+            <column length="15" name="telefono" not-null="true"/>
+        </property>
+        <property name="lineaDireccion" type="string">
+            <column length="50" name="linea_direccion" not-null="true"/>
+        </property>
+        <property name="ciudad" type="string">
+            <column length="50" name="ciudad" not-null="true"/>
+        </property>
+        <property name="region" type="string">
+            <column length="50" name="region"/>
+        </property>
+        <property name="pais" type="string">
+            <column length="50" name="pais"/>
+        </property>
+        <property name="codigoPostal" type="string">
+            <column length="10" name="codigo_postal"/>
+        </property>
+        <property name="limiteCredito" type="big_decimal">
+            <column name="limite_credito" precision="15"/>
+        </property>
+        <set fetch="select" inverse="true" lazy="true" name="pedidos" table="pedido">
+            <key>
+                <column name="codigo_cliente" not-null="true"/>
+            </key>
+            <one-to-many class="org.iesvdm.tienda.modelo.Pedido"/>
+        </set>
+        <set fetch="select" inverse="true" lazy="true" name="pagos" table="pago">
+            <key>
+                <column name="codigo_cliente" not-null="true"/>
+            </key>
+            <one-to-many class="org.iesvdm.tienda.modelo.Pago"/>
+        </set>
+    </class>
+</hibernate-mapping>

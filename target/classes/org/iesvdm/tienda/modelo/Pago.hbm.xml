@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generated 3 dic 2023 12:28:04 by Hibernate Tools 5.6.15.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class catalog="jardineria" name="org.iesvdm.tienda.modelo.Pago" optimistic-lock="none" table="pago">
+        <composite-id class="org.iesvdm.tienda.modelo.PagoId" name="id">
+            <key-property name="codigoCliente" type="int">
+                <column name="codigo_cliente"/>
+            </key-property>
+            <key-property name="idTransaccion" type="string">
+                <column length="50" name="id_transaccion"/>
+            </key-property>
+        </composite-id>
+        <many-to-one class="org.iesvdm.tienda.modelo.Cliente" fetch="select" insert="false" name="cliente" update="false">
+            <column name="codigo_cliente" not-null="true"/>
+        </many-to-one>
+        <property name="formaPago" type="string">
+            <column length="40" name="forma_pago" not-null="true"/>
+        </property>
+        <property name="fechaPago" type="date">
+            <column length="10" name="fecha_pago" not-null="true"/>
+        </property>
+        <property name="total" type="big_decimal">
+            <column name="total" not-null="true" precision="15"/>
+        </property>
+    </class>
+</hibernate-mapping>

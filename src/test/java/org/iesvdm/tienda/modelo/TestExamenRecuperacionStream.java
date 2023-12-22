@@ -91,7 +91,10 @@ public class TestExamenRecuperacionStream {
             List<Pedido> list = pedidoHome.findAll();
 
             //TODO STREAMS
-
+            list.stream()
+                    .map(Pedido::getEstado)
+                    .distinct()
+                    .forEach(System.out::println);
 
             pedidoHome.commitTransaction();
         } catch (RuntimeException e) {
@@ -116,7 +119,12 @@ public class TestExamenRecuperacionStream {
             List<Cliente> list = clienteHome.findAll();
 
             //TODO STREAMS
-
+            list.stream()
+                    .filter(c->c.getPagos()
+                            .stream()
+                            .anyMatch(p->p.getFechaPago().toString().contains("2008")))
+                    .map(Cliente::getCodigoCliente)
+                    .forEach(System.out::println);
 
             clienteHome.commitTransaction();
         } catch (RuntimeException e) {
@@ -144,7 +152,10 @@ public class TestExamenRecuperacionStream {
             List<Pedido> list = pedidoHome.findAll();
 
             //TODO STREAMS
-
+            list.stream()
+                    .filter(p->p.getFechaEntrega()!=null&&p.getFechaEntrega().after(p.getFechaEsperada()))
+                    .map(p->p.getCodigoPedido()+" "+p.getCliente().getCodigoCliente()+" "+p.getFechaEsperada()+" "+p.getFechaEntrega())
+                    .forEach(System.out::println);
 
             pedidoHome.commitTransaction();
         } catch (RuntimeException e) {
@@ -180,10 +191,16 @@ public class TestExamenRecuperacionStream {
             List<Pedido> list = pedidoHome.findAll();
 
             //TODO STREAMS
-            list.stream().filter(pedido -> {
-            //Completa con la prueba de aritmética de fechas previa el filtro y el stream.
+            list.stream().filter(p -> {
+                c.setTime(p.getFechaEsperada());
+                c.add(Calendar.DATE, -2);
+                if (p.getFechaEntrega()!=null && p.getFechaEntrega().before(Date.from(c.toInstant()))){
+                    return true;
+                }
                 return false;
-            });
+            }).map(p->p.getCodigoPedido()+" "+p.getCliente().getCodigoCliente()+" "+p.getFechaEsperada()+" "+p.getFechaEntrega())
+                    .forEach(System.out::println);
+            ;
 
             pedidoHome.commitTransaction();
         } catch (RuntimeException e) {
@@ -207,7 +224,10 @@ public class TestExamenRecuperacionStream {
             List<Pago> list = pagoHome.findAll();
 
             //TODO STREAMS
-
+            list.stream()
+                    .filter(p->p.getFechaPago().toString().contains("2008")&&p.getFormaPago().equals("PayPal"))
+                    .sorted(comparing(Pago::getTotal).reversed())
+                    .forEach(System.out::println);
 
             pagoHome.commitTransaction();
         } catch (RuntimeException e) {
@@ -230,7 +250,12 @@ public class TestExamenRecuperacionStream {
             List<Cliente> list = clienteHome.findAll();
 
             //TODO STREAMS
-
+            list.stream()
+                    .filter(c->!c.getPagos().isEmpty())
+                    .filter(c-> c.getRegion() != null)
+                    .map(Cliente::getRegion)
+                    .distinct()
+                    .forEach(System.out::println);
             clienteHome.commitTransaction();
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -253,6 +278,9 @@ public class TestExamenRecuperacionStream {
             List<Cliente> list = clienteHome.findAll();
 
             //TODO STREAMS
+            System.out.println(list.stream()
+                    .filter(c->c.getCiudad().equals("Madrid"))
+                    .count());
 
 
             clienteHome.commitTransaction();
@@ -276,6 +304,10 @@ public class TestExamenRecuperacionStream {
             List<Cliente> list = clienteHome.findAll();
 
             //TODO STREAMS
+            System.out.println(list.stream()
+                    .max(comparing(Cliente::getLimiteCredito))
+                    .map(Cliente::getNombreCliente)
+                    .orElse(null));
 
 
             clienteHome.commitTransaction();
@@ -289,6 +321,7 @@ public class TestExamenRecuperacionStream {
     /**
      *  9. Devuelve un listado con el número de clientes que tiene cada país.
      */
+    @Test
     void test9() {
         ClienteHome clienteHome = new ClienteHome();
 
@@ -298,7 +331,7 @@ public class TestExamenRecuperacionStream {
             List<Cliente> list = clienteHome.findAll();
 
             //TODO STREAMS
-
+            System.out.println(list.stream().collect(groupingBy(Cliente::getPais,counting())));
             clienteHome.commitTransaction();
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -311,6 +344,7 @@ public class TestExamenRecuperacionStream {
      * 10. Calcula la fecha del primer y último pago realizado por cada uno de los clientes.
      * El listado deberá mostrar el nombre y los apellidos de cada cliente.
      */
+    @Test
     void test10() {
         ClienteHome clienteHome = new ClienteHome();
 
@@ -320,7 +354,11 @@ public class TestExamenRecuperacionStream {
             List<Cliente> list = clienteHome.findAll();
 
             //TODO STREAMS
-
+            //calcular? no se que hacer, te lo dejo asi.
+            list.stream().map(c->c.getNombreCliente()+" "
+                            +c.getPagos().stream().map(Pago::getFechaPago).min(Date::compareTo).orElse(null)+" "
+                            +c.getPagos().stream().map(Pago::getFechaPago).max(Date::compareTo).orElse(null)
+                    ).forEach(System.out::println);
             clienteHome.commitTransaction();
         } catch (RuntimeException e) {
             e.printStackTrace();

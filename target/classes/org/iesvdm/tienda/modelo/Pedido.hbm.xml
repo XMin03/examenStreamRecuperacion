@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generated 3 dic 2023 12:28:04 by Hibernate Tools 5.6.15.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class catalog="jardineria" name="org.iesvdm.tienda.modelo.Pedido" optimistic-lock="none" table="pedido">
+        <id name="codigoPedido" type="int">
+            <column name="codigo_pedido"/>
+            <generator class="assigned"/>
+        </id>
+        <many-to-one class="org.iesvdm.tienda.modelo.Cliente" fetch="select" name="cliente">
+            <column name="codigo_cliente" not-null="true"/>
+        </many-to-one>
+        <property name="fechaPedido" type="date">
+            <column length="10" name="fecha_pedido" not-null="true"/>
+        </property>
+        <property name="fechaEsperada" type="date">
+            <column length="10" name="fecha_esperada" not-null="true"/>
+        </property>
+        <property name="fechaEntrega" type="date">
+            <column length="10" name="fecha_entrega"/>
+        </property>
+        <property name="estado" type="string">
+            <column length="15" name="estado" not-null="true"/>
+        </property>
+        <property name="comentarios" type="string">
+            <column length="65535" name="comentarios"/>
+        </property>
+    </class>
+</hibernate-mapping>
